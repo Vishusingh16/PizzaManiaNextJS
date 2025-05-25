@@ -1,7 +1,25 @@
 # 🍕 PizzaMania – Your Ultimate Next.js Pizza Dashboard Experience 🚀
 
 **Author**: Vaishnav Singh
-![Uploading Screenshot (79).png…]()
+
+
+![Uploading Screenshot (36).png…]()
+![Screenshot (37)](https://github.com/user-attachments/assets/68c2e298-a26d-407c-bfaf-b57fdf999787)
+![Screenshot (38)](https://github.com/user-attachments/assets/4e3ccfe4-0e4a-4609-ab48-8c32ce602d1c)
+![Screenshot (39)](https://github.com/user-attachments/assets/4b1243e7-e130-4c27-a1d7-3b31e6a24496)
+![Screenshot (40)](https://github.com/user-attachments/assets/42cee2dd-3f8b-497c-9f6c-9420840a0cda)
+![Screenshot (41)](https://github.com/user-attachments/assets/5bffb569-00a0-4251-9a0c-7671f37b7aef)
+![Screenshot (42)](https://github.com/user-attachments/assets/332009dd-70a8-488e-885b-259c935d0aa4)
+![Screenshot (43)](https://github.com/user-attachments/assets/98e528a1-bf3f-4bc1-bf23-c3f717c7f61b)
+![Screenshot (44)](https://github.com/user-attachments/assets/b29386f7-f10a-49a4-9903-bb3d9216f933)
+![Screenshot (45)](https://github.com/user-attachments/assets/5b411ba8-2bc4-45b4-b8e5-9591e646b52d)
+![Screenshot (46)](https://github.com/user-attachments/assets/1efacb1f-a693-4a40-a35c-6ac658b6e6e1)
+
+![Screenshot (47)](https://github.com/user-attachments/assets/d723e515-20d2-4b93-8091-9306c5c7bfbc)
+![Screenshot (48)](https://github.com/user-attachments/assets/c49fc57d-6226-49a7-9366-3522182de5d1)
+![Screenshot (59)](https://github.com/user-attachments/assets/42b5be4b-c263-455a-ad1d-caf6c85864dc)
+![Screenshot (61)](https://github.com/user-attachments/assets/4973b060-9664-4286-86b9-d47358e22a60)
+![Screenshot (79)](https://github.com/user-attachments/assets/ed179f38-2650-48b1-8539-300ed738eb50)
 
 ---
 
