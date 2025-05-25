@@ -1,14 +1,15 @@
 'use client' // This component now needs client-side interactivity
 
 import type React from "react"
-import { useState, useEffect, useRef } from "react" // Added for menu state
+import { useState, useEffect } from "react"
 import { redirect } from "next/navigation"
-import { useSession } from "next-auth/react" // Preferred for client components
+import { useSession } from "next-auth/react"
 import { DashboardNav } from "@/components/dashboard-nav"
+
 import { UserNav } from "@/components/user-nav"
 import { ModeToggle } from "@/components/mode-toggle"
 import { Button } from "@/components/ui/button"
-import { ChevronDown, ChevronUp, GripVertical } from "lucide-react" // Icons
+import { Menu, X, PanelLeftOpen, PanelLeftClose } from "lucide-react" // Added Panel icons
 
 // Font import suggestion (if not already done):
 // @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700&display=swap');
@@ -24,39 +25,77 @@ export default function DashboardLayout({
       redirect("/")
     },
   })
-  
-  const [isNavOpen, setIsNavOpen] = useState(false); // State for the top nav bar
-  const navRef = useRef<HTMLDivElement>(null);
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isSidebarFeatureEnabled, setIsSidebarFeatureEnabled] = useState(true) // New state for sidebar feature
+
+  // Close sidebar if feature is disabled
+  useEffect(() => {
+    if (!isSidebarFeatureEnabled) {
+      setIsSidebarOpen(false);
+    }
+  }, [isSidebarFeatureEnabled]);
+
+  // Optional: Close sidebar on ESC key press
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isSidebarFeatureEnabled) { // Only if feature is enabled
+        setIsSidebarOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => {
+      document.removeEventListener('keydown', handleEsc);
+    };
+  }, [isSidebarFeatureEnabled]); // Re-run if feature enabled status changes
+
 
   if (status === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-yellow-50/30 dark:bg-slate-900/80">
         <p className="text-xl font-semibold text-orange-600">Loading session...</p>
       </div>
-    );
+    )
   }
 
-  // Function to handle closing the nav, to be passed to DashboardNav
-  const closeNav = () => {
-    setIsNavOpen(false);
-  };
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
+  const closeSidebar = () => setIsSidebarOpen(false)
+  const toggleSidebarFeature = () => setIsSidebarFeatureEnabled(!isSidebarFeatureEnabled)
 
   return (
     <div className="flex min-h-screen flex-col bg-yellow-50/30 dark:bg-slate-900/80 font-sans">
-      {/* Header (remains the same) */}
+      {/* Header */}
       <header
         className="
-          sticky top-0 z-20 border-b-4 
+          sticky top-0 z-30 border-b-4 
           border-amber-500 dark:border-amber-600 
           bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 
           dark:from-red-700 dark:via-orange-600 dark:to-amber-500
           text-white shadow-lg
         "
       >
-        <div className="container mx-auto grid h-20 grid-cols-[auto_1fr_auto] items-center px-4 sm:px-6">
-          <div className="flex items-center">
-            <span className="text-3xl" role="img" aria-label="pizza slice">🍕</span>
+        <div className="container mx-auto grid h-20 grid-cols-[auto_1fr_auto] items-center gap-x-3 px-4 sm:gap-x-4 sm:px-6">
+          {/* Col 1: Left Aligned Items (Sidebar Toggle + Pizza Icon) */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            {isSidebarFeatureEnabled && (
+              <Button
+                onClick={toggleSidebar}
+                variant="ghost"
+                size="icon"
+                className="text-white hover:bg-white/10 active:bg-white/20"
+                aria-expanded={isSidebarOpen}
+                aria-controls="dashboard-sidebar"
+              >
+                {isSidebarOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+                <span className="sr-only">{isSidebarOpen ? "Close menu" : "Open menu"}</span>
+              </Button>
+            )}
+            <div className="flex items-center">
+              <span className="text-3xl" role="img" aria-label="pizza slice">🍕</span>
+            </div>
           </div>
+
+          {/* Col 2: Center Aligned Title */}
           <div className="flex items-center justify-center">
             <div 
               className="
@@ -76,86 +115,85 @@ export default function DashboardLayout({
               </h1>
             </div>
           </div>
-          <div className="flex items-center justify-end gap-4">
+
+          {/* Col 3: Right Aligned Items (Controls) */}
+          <div className="flex items-center justify-end gap-1.5 sm:gap-2">
+            <Button
+              onClick={toggleSidebarFeature}
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/10 active:bg-white/20"
+              title={isSidebarFeatureEnabled ? "Disable Sidebar Panel" : "Enable Sidebar Panel"}
+            >
+              {isSidebarFeatureEnabled ? <PanelLeftClose className="h-6 w-6" /> : <PanelLeftOpen className="h-6 w-6" />}
+              <span className="sr-only">{isSidebarFeatureEnabled ? "Disable sidebar panel" : "Enable sidebar panel"}</span>
+            </Button>
             <ModeToggle />
             {session?.user && <UserNav user={session.user} />}
           </div>
         </div>
       </header>
 
-      {/* Top Toggle Navigation Bar */}
-      <nav 
-        ref={navRef}
-        className="sticky top-20 z-10 border-b-2 border-amber-300/70 dark:border-slate-700/50 bg-amber-100/80 dark:bg-slate-800/70 shadow-md backdrop-blur-sm"
-      >
-        <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 py-2.5"> {/* Increased py slightly */}
-          <div className="flex items-center gap-3">
-             <GripVertical className="h-6 w-6 text-orange-600 dark:text-orange-400 hidden sm:block" />
-            <div 
-              className="
-                inline-block bg-orange-500 dark:bg-orange-600 
-                px-4 py-1.5 rounded-md shadow-sm
-              "
-            >
+      {/* Sidebar Navigation (Conditionally Rendered) */}
+      {isSidebarFeatureEnabled && (
+        <aside
+          id="dashboard-sidebar"
+          className={`
+            fixed top-0 left-0 z-50 h-full w-72 
+            transform transition-transform duration-300 ease-in-out
+            bg-white dark:bg-slate-900 shadow-xl
+            pt-20 /* Header height */
+            ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          `}
+        >
+          <div className="flex h-full flex-col overflow-y-auto p-5">
+            <div className="mb-6 flex items-center justify-between">
               <h2 
                 className="
-                  text-lg font-semibold text-white dark:text-yellow-50 
+                  text-xl font-bold text-orange-600 dark:text-orange-400 
                   font-['Lilita_One',_cursive] tracking-wide
                 "
               >
-                Navigation
+                Menu
               </h2>
+              <Button
+                  onClick={closeSidebar}
+                  variant="ghost"
+                  size="icon"
+                  className="text-slate-600 dark:text-slate-400 md:hidden"
+              >
+                  <X className="h-6 w-6" />
+                  <span className="sr-only">Close menu</span>
+              </Button>
             </div>
-          </div>
-          
-          {/* Styled Toggle Button in its own "Box" */}
-          <div 
-            className="
-              bg-white/70 dark:bg-slate-700/50 
-              rounded-lg shadow 
-              border border-amber-300/50 dark:border-slate-600/50
-            "
-          >
-            <Button
-              variant="ghost" // Using ghost to allow custom background from parent
-              size="sm" // Keep button size consistent
-              onClick={() => setIsNavOpen(!isNavOpen)}
-              className="
-                text-orange-700 dark:text-orange-300 
-                hover:bg-amber-200/70 dark:hover:bg-slate-600/70
-                active:bg-amber-300/70 dark:active:bg-slate-500/70
-                font-semibold px-3 py-1.5 flex items-center gap-1.5
-              "
-              aria-expanded={isNavOpen}
-              aria-controls="dashboard-top-nav-content"
-            >
-              {isNavOpen ? "Hide" : "Show"} Menu
-              {isNavOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
-        
-        {/* Collapsible Navigation Content */}
-        <div
-          id="dashboard-top-nav-content"
-          className={`
-            overflow-hidden transition-all duration-300 ease-in-out
-            ${isNavOpen ? 'max-h-[500px] opacity-100 py-3' : 'max-h-0 opacity-0 py-0'} {/* Adjusted max-h, added py transition */}
-          `}
-        >
-          <div className="container mx-auto px-4 sm:px-6 border-t border-amber-200 dark:border-slate-600">
             <DashboardNav 
-              onLinkClick={closeNav} // Pass the closeNav function
+           onLinkClick={closeSidebar} 
             />
           </div>
-        </div>
-      </nav>
+        </aside>
+      )}
+
+      {/* Overlay for mobile (Conditionally Rendered) */}
+      {isSidebarFeatureEnabled && isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden"
+          onClick={closeSidebar}
+        />
+      )}
 
       {/* Main Content Area */}
-      <div className="container mx-auto flex flex-1">
-        <main className="flex-1 p-6 md:p-8 lg:p-10 bg-white/80 dark:bg-slate-800/30 backdrop-blur-sm">
-          {children}
-        </main>
+      <div 
+        className={`
+          flex-1 transition-all duration-300 ease-in-out 
+          ${isSidebarFeatureEnabled && isSidebarOpen ? "md:ml-72" : "ml-0"}
+          pt-20 /* Account for sticky header height */
+        `}
+      >
+        <div className="container mx-auto">
+          <main className="flex-1 p-6 md:p-8 lg:p-10 bg-white/80 dark:bg-slate-800/30 backdrop-blur-sm rounded-t-lg md:rounded-lg shadow-inner">
+            {children}
+          </main>
+        </div>
       </div>
     </div>
   )

@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   description: "A Next.js dashboard with Google Authentication",
 }
 
+
 export default function RootLayout({
   children,
 }: {

@@ -43,6 +43,7 @@ export default function DashboardPage() {
     setToastMessage(message);
     setToastType(type);
   };
+  
 
   const handleAddToCart = (pizzaName: string) => {
     setCartItemCount(prevCount => prevCount + 1);

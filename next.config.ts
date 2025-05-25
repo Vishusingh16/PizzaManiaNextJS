@@ -1,11 +1,9 @@
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true, // Or whatever other configs you have
+  reactStrictMode: true,
   images: {
     domains: [
       'via.placeholder.com',
-   
     ],
   },
 }
