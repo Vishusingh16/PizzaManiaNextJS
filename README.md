@@ -1,6 +1,7 @@
 # 🍕 PizzaMania – Your Ultimate Next.js Pizza Dashboard Experience 🚀
 
 **Author**: Vaishnav Singh
+![Uploading Screenshot (79).png…]()
 
 ---
 
